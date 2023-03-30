@@ -2,13 +2,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import VideoPlayer from '@/components/VideoPlayer'
-import StreamingRoom from '@/components/StreamingRoom'
+import StreamRoom from '@/components/StreamRoom'
+import Chat from '@/components/Chat'
 
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Stream() {
+export default function StreamThree() {
   return (
     <>
       <Head>
@@ -18,8 +18,8 @@ export default function Stream() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-        <StreamingRoom roomId={"room1"} />
-      
+      <StreamRoom />
+
     </>
   )
 }
