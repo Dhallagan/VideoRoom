@@ -7,11 +7,17 @@ import { MdPlayCircleOutline, MdPauseCircleOutline } from 'react-icons/md'; // I
 const database = firebase.database();
 
 function StreamRoom() {
+  const [hasWindow, setHasWindow] = useState(false);
   const [playbackStatus, setPlaybackStatus] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const playerRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
   const [timerId, setTimerId] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') 
+      setHasWindow(true)
+  },[])
 
   useEffect(() => {
     const playbackStatusRef = database.ref('playbackStatus');
@@ -59,18 +65,15 @@ function StreamRoom() {
     database.ref('timestamp').set(firebase.database.ServerValue.TIMESTAMP);
   };
 
-  const handleMouseEnter = () => {
+  const handleMouseMove = () => {
     setIsHovering(true);
     if (timerId) {
       clearTimeout(timerId);
+      const id = setTimeout(() => {
+        setIsHovering(false);
+      }, 2000);
+      setTimerId(id);
     }
-  };
-
-  const handleMouseLeave = () => {
-    const id = setTimeout(() => {
-      setIsHovering(false);
-    }, 5000);
-    setTimerId(id);
   };
 
   const handleVideoEnded = () => {
@@ -79,10 +82,10 @@ function StreamRoom() {
 
   return (
     <div className="App"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      //onMouseLeave={handleMouseLeave}
     >
-      <ReactPlayer
+      {hasWindow && <ReactPlayer
         ref={playerRef}
         className="react-player"
         url="https://firebasestorage.googleapis.com/v0/b/video-room-8c622.appspot.com/o/IMG_3118.MOV?alt=media&token=b63fa0b7-dc19-44a6-af35-58d1cff1df3b"
@@ -92,7 +95,7 @@ function StreamRoom() {
         width="100%"
         height="100%"
         onEnded={handleVideoEnded}
-      />
+      />}
       {!playbackStatus && (isHovering || !playbackStatus) && (
         <MdPlayCircleOutline className="play-button" onClick={handlePlayPause} />
       )}
